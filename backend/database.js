@@ -7,12 +7,9 @@ const user = process.env.MONGO_USERNAME;
 const password = process.env.MONGO_PASSWORD;
 const uri = `mongodb+srv://${user}:${password}@cluster0.0t9zmus.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
-const connectToDb = async () => {
+const connectToDb = () => {
   try {
-    const conn = await mongoose.createConnection(uri);
-    conn.on("connected", () => {
-      console.log("Connected to db");
-    });
+    mongoose.connect(uri).then(() => console.log("Connected to db"));
   } catch (err) {
     console.log(err);
   }
