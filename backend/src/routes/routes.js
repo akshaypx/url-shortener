@@ -20,4 +20,23 @@ router.post("/shorten", async (req, res) => {
   }
 });
 
+router.get("/shorten/:shortCode", async (req, res) => {
+  const { shortCode } = req.params;
+  if (shortCode) {
+    //api logic
+    const doc = await Url.findOne({ shortCode: shortCode });
+    if (!doc) {
+      //if doc does not exist then return 404 error
+      res.status(404).json({ message: "Url not found." });
+    } else {
+      //if doc exists return the doc
+      res.status(200).json(doc);
+    }
+  } else {
+    //shortCode not received in params
+    //bad request
+    res.status(400).json({ message: "Short Code not provided in URL." });
+  }
+});
+
 export default router;
