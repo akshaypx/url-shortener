@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { PacmanLoader } from "react-spinners";
 import { backendBaseUrl, frontendBaseUrl } from "./domain";
+import { useNavigate } from "react-router";
 
 function App() {
   const [longUrl, setLongUrl] = useState<string>("");
@@ -8,6 +9,8 @@ function App() {
     "idle" | "pending" | "success" | "failed"
   >("idle");
   const [shortUrl, setShortUrl] = useState<string>("");
+  const [copied, setCopied] = useState<boolean>(false);
+  const navigate = useNavigate();
 
   const getShortUrl = async (longUrl: string) => {
     try {
@@ -45,6 +48,12 @@ function App() {
       //show toast for validation
       console.log("todo:show error toast");
     }
+  };
+
+  const copyToClipboard = (e: any) => {
+    e.preventDefault();
+    navigator.clipboard.writeText(shortUrl);
+    setCopied(true);
   };
 
   return (
@@ -88,10 +97,28 @@ function App() {
           </div>
         )
       ) : (
-        <div className="flex flex-col justify-center items-center p-4">
+        <div className="flex flex-col justify-center items-center p-4 gap-2">
           <p>This is your short URL:</p>
           <br />
-          <a href={shortUrl}>{shortUrl}</a>
+          <div className="flex gap-2 justify-center items-center">
+            <a className="underline text-blue-600" href={shortUrl}>
+              {shortUrl}
+            </a>
+            <button
+              onClick={copyToClipboard}
+              className="bg-gray-600 text-white px-4 py-2 rounded-md"
+              disabled={copied}
+            >
+              {copied ? "Done" : "Copy"}
+            </button>
+            <button
+              onClick={() => navigate("/home")}
+              className="bg-gray-600 text-white px-4 py-2 rounded-md"
+              disabled={copied}
+            >
+              Try Again?
+            </button>
+          </div>
         </div>
       )}
     </>

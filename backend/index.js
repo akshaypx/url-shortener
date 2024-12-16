@@ -12,7 +12,7 @@ const app = e();
 
 app.use(
   cors({
-    origin: ["http://localhost:5173"],
+    origin: ["http://localhost:5173/home"],
   })
 );
 app.use(e.json());
