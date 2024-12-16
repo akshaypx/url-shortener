@@ -70,4 +70,18 @@ router.put("/shorten/:shortCode", async (req, res) => {
   }
 });
 
+router.delete("/shorten/:shortCode", async (req, res) => {
+  try {
+    const { shortCode } = req.params;
+    if (!shortCode) {
+      res.status(400).json({ message: "Please add the shortCode in params." });
+    } else {
+      await Url.deleteOne({ shortCode: shortCode });
+      res.status(200).json({ message: "Short code deleted successfully." });
+    }
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
+
 export default router;
