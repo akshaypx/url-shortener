@@ -76,8 +76,15 @@ router.delete("/shorten/:shortCode", async (req, res) => {
     if (!shortCode) {
       res.status(400).json({ message: "Please add the shortCode in params." });
     } else {
-      await Url.deleteOne({ shortCode: shortCode });
-      res.status(200).json({ message: "Short code deleted successfully." });
+      Url.deleteOne({ shortCode: shortCode })
+        .then((result) => {
+          if (result) {
+            res.status(204).json({});
+          } else {
+            res.status(404).json({ message: "Short code not found" });
+          }
+        })
+        .catch(() => res.status(500).json({ message: "Error deleting user" }));
     }
   } catch (e) {
     res.status(500).json({ error: e.message });
