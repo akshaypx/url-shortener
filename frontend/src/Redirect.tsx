@@ -11,10 +11,14 @@ const Redirect = () => {
       const response = await fetch(backendBaseUrl + "/shorten/" + shortCode);
       const data = await response.json();
       const url = data.url;
-      await fetch(backendBaseUrl + "/" + shortCode, {
+      console.log("URL fetched from code is->", url);
+      console.log("Before redirect->", backendBaseUrl + "/" + shortCode);
+      const res = await fetch(backendBaseUrl + "/shorten/" + shortCode, {
         method: "PUT",
         body: JSON.stringify({ url: url }),
+        headers: { "Content-Type": "application/json" },
       });
+      console.log(res);
       setIsError(false);
       return url;
     } catch (e) {
@@ -28,6 +32,7 @@ const Redirect = () => {
     getUrl()
       .then((val) => {
         window.location.href = val;
+        // console.log("ok redirect now");
       })
       .catch((e) => console.log(e));
   }, []);

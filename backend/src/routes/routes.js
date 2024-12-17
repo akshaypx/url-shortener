@@ -11,6 +11,7 @@ router.post("/shorten", async (req, res) => {
       const doc = new Url();
       doc.shortCode = shortCode;
       doc.url = url;
+      doc.numberOfClicks = 0;
       await doc.save().then((val) => res.status(200).json(val));
     } else {
       res.status(400).json({ message: "Url should be provided" });
@@ -54,6 +55,7 @@ router.put("/shorten/:shortCode", async (req, res) => {
         .json({ message: "Url to be updated is required in the payload." });
     }
     const doc = await Url.findOne({ shortCode: shortCode });
+    console.log("Doc to be updated->", doc);
     if (!doc) {
       //Short code does not exists
       res.status(404).json({ message: "Short code does not exist." });
@@ -62,7 +64,6 @@ router.put("/shorten/:shortCode", async (req, res) => {
       doc.url = url;
       doc.numberOfClicks = doc.numberOfClicks + 1;
       doc.save().then((val) => res.status(200).json(val));
-      res.status(201).json(doc);
     }
   } catch (e) {
     res.status(500).json({ error: e.message });

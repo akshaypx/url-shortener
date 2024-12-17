@@ -4,7 +4,7 @@ const schema = new Schema(
   {
     url: { type: String, required: true },
     shortCode: { type: String, required: true },
-    numberOfClicks: { type: Number },
+    numberOfClicks: { type: Number, required: true },
   },
   {
     timestamps: true,

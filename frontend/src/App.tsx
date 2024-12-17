@@ -10,6 +10,11 @@ function App() {
   >("idle");
   const [shortUrl, setShortUrl] = useState<string>("");
   const [copied, setCopied] = useState<boolean>(false);
+  const [numberOfClicks, setNumberOfClicks] = useState(0);
+  const [isLoadingDetails, setIsLoadingDetails] = useState<
+    "idle" | "pending" | "success" | "failed"
+  >("idle");
+
   const navigate = useNavigate();
 
   const getShortUrl = async (longUrl: string) => {
@@ -56,6 +61,26 @@ function App() {
     setCopied(true);
   };
 
+  const getUrlDetails = async () => {
+    console.log(
+      backendBaseUrl + "/shorten" + longUrl.substring(frontendBaseUrl.length)
+    );
+    const response = await fetch(
+      backendBaseUrl + "/shorten" + longUrl.substring(frontendBaseUrl.length)
+    );
+    const data = await response.json();
+    const clicks = data.numberOfClicks || 0;
+    setIsLoadingDetails(() => {
+      setNumberOfClicks(clicks);
+      return "success";
+    });
+  };
+
+  const handleGetStats = (e: any) => {
+    e.preventDefault();
+    getUrlDetails();
+  };
+
   return (
     <>
       {/* Navbar */}
@@ -77,7 +102,11 @@ function App() {
               Paste your URL to shorten
             </p>
             <form
-              onSubmit={handleSubmit}
+              onSubmit={
+                longUrl.includes(frontendBaseUrl)
+                  ? handleGetStats
+                  : handleSubmit
+              }
               className="flex flex-col md:flex-row max-w-[900px] w-full p-4 items-start justify-center gap-2"
             >
               <input
@@ -87,13 +116,25 @@ function App() {
                 defaultValue={longUrl}
                 onChange={(e) => setLongUrl(e.target.value)}
               />
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-2 w-full rounded-md md:max-w-[20%]"
-              >
-                Shorten!
-              </button>
+              {longUrl.includes(frontendBaseUrl) ? (
+                <button
+                  type="submit"
+                  className="bg-green-500 text-white px-4 py-2 w-full rounded-md md:max-w-[20%]"
+                >
+                  Get Stats
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="bg-blue-500 text-white px-4 py-2 w-full rounded-md md:max-w-[20%]"
+                >
+                  Shorten!
+                </button>
+              )}
             </form>
+            {isLoadingDetails == "success" && (
+              <p>This URL has been clicked {numberOfClicks} times</p>
+            )}
           </div>
         )
       ) : (
