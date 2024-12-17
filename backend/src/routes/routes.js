@@ -53,16 +53,15 @@ router.put("/shorten/:shortCode", async (req, res) => {
         .status(400)
         .json({ message: "Url to be updated is required in the payload." });
     }
-    const doc = await Url.findOneAndUpdate(
-      { shortCode: shortCode },
-      { url: url },
-      { returnOriginal: false }
-    );
+    const doc = await Url.findOne({ shortCode: shortCode });
     if (!doc) {
       //Short code does not exists
       res.status(404).json({ message: "Short code does not exist." });
     } else {
       //Short code exists and we need to update
+      doc.url = url;
+      doc.numberOfClicks = doc.numberOfClicks + 1;
+      doc.save().then((val) => res.status(200).json(val));
       res.status(201).json(doc);
     }
   } catch (e) {

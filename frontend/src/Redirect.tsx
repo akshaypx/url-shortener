@@ -11,6 +11,10 @@ const Redirect = () => {
       const response = await fetch(backendBaseUrl + "/shorten/" + shortCode);
       const data = await response.json();
       const url = data.url;
+      await fetch(backendBaseUrl + "/" + shortCode, {
+        method: "PUT",
+        body: JSON.stringify({ url: url }),
+      });
       setIsError(false);
       return url;
     } catch (e) {

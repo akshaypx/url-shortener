@@ -12,7 +12,10 @@ const app = e();
 
 app.use(
   cors({
-    origin: ["https://url-shortener-eight-lovat.vercel.app"],
+    origin: [
+      "https://url-shortener-eight-lovat.vercel.app",
+      "http://localhost:5173",
+    ],
   })
 );
 app.use(e.json());
